@@ -1,0 +1,57 @@
+#include<stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>          /* See NOTES */
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+#include"tcp.h"
+#include"session.h"
+
+int main(int argc,char *argv[])
+{
+	int fd = init_client(argv[1],atoi(argv[2]));
+	if(fd == -1)
+	{
+		printf("init_client error\n");
+		return -1;
+	}
+	
+	while(1)
+	{
+		//一直等待客户端的连接
+		int connfd = accept(fd,NULL,NULL);
+		if(connfd == -1)
+		{
+			printf("accept error\n");
+		}
+		else
+		{
+			//连接成功
+			printf("连接成功\n");
+			int pid = fork();
+			if(pid == 0)
+			{
+				//子进程
+				//供客户端持续发信号来
+				while(1)
+				{
+					disClientCmd(connfd);
+				}
+				close(connfd);
+				exit(0);
+			}
+			else if(pid > 0)
+			{
+				//父进程
+			}
+			else
+			{
+				//fork出错
+				break;
+			}
+		}
+		
+	}
+	
+}
