@@ -1,0 +1,51 @@
+#include<stdio.h>
+#include <stdlib.h>
+#include"tcp.h"
+#include"session.h"
+
+//./ftpClient 服务端ip 服务端端口号
+int main(int argc,char *argv[])
+{
+	int sockfd = connect_server(argv[1],atoi(argv[2]));
+	if(sockfd == -1)
+	{
+		return -1;
+	}
+	
+	int cmd;
+	while(1)
+	{
+		printf("请输入您的操作:\n");
+		printf("---------0,退出操作\n");
+		printf("---------1,ls操作\n");
+		printf("---------2,upload操作\n");
+		printf("---------3,download操作\n");
+		scanf("%d",&cmd);
+		getchar();
+		// printf("cmd=%d",cmd);
+		switch(cmd)
+		{	
+			char filename[100];
+			case 0:
+				//写退出相关的代码
+				bye_cmd(sockfd);
+				break;
+			case 1:
+				//写ls相关的代码
+				ls_cmd(sockfd);
+				break;
+			case 2:
+				//写上传相关的代码
+				upload_cmd(sockfd,filename);
+				break;
+			case 3:
+				//写下载相关的代码
+				printf("请输入你想下载的文件:");
+				scanf("%s",filename);
+				getchar();
+				download_cmd(sockfd,filename);
+				break;
+		}
+		
+	}
+}
